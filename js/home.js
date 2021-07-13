@@ -8,7 +8,6 @@ window.addEventListener('DOMContentLoaded', () => {
 const getEmployeePayrollDataFromStorage = () => {
     return localStorage.getItem('EmployeePayrollList') ? JSON.parse(localStorage.getItem('EmployeePayrollList')) : [];
 }
-//UC3_Employee Payroll details in a Tabular Format.using Template Literals.
 const createInnerHtml = () => {
     const headerHtml = `<tr>
     <th></th>
@@ -19,9 +18,11 @@ const createInnerHtml = () => {
     <th>Start Date</th>
     <th>Actions</th>
     </tr>`;
-    //Display Employee Details from Local Storage
-    if(employeePayrollList.length==0) return;
     let innerHtml = `${headerHtml}`;
+    if(employeePayrollList.length==0) {
+        document.querySelector('#table-display').innerHTML = innerHtml;
+        return;
+    }
     for(const employeePayrollData of employeePayrollList){
         innerHtml = `${innerHtml}
         <tr>
@@ -47,7 +48,7 @@ const getDeptHtml = (deptList) => {
     }
     return deptHtml;
 }
-//to Remove an Employee from the Payroll details.
+
 const remove = (node) => {
     let employeePayrollData = employeePayrollList.find(emp => emp._id == node.id);
     if(!employeePayrollData) return;
@@ -57,3 +58,10 @@ const remove = (node) => {
     document.querySelector(".emp-count").textContent = employeePayrollList.length;
     createInnerHtml();
 }
+//Ability to Update an Employee Payroll details.
+const update = (node) => {
+    let employeePayRollData = employeePayrollList.find(emp => emp._id == node.id);
+    if (!employeePayRollData) return;
+    localStorage.setItem('editEmp', JSON.stringify(employeePayRollData));
+    window.location.replace("../pages/employeePayrollForm.html");
+};
