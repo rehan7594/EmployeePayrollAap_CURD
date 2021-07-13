@@ -3,6 +3,7 @@ window.addEventListener('DOMContentLoaded', () => {
     employeePayrollList = getEmployeePayrollDataFromStorage();
     document.querySelector(".emp-count").textContent = employeePayrollList.length;
     createInnerHtml();
+    localStorage.removeItem('editEmp');
 });
 
 const getEmployeePayrollDataFromStorage = () => {
@@ -20,8 +21,11 @@ const createInnerHtml = () => {
     <th>Actions</th>
     </tr>`;
     //Display Employee Details from Local Storage
-    if(employeePayrollList.length==0) return;
     let innerHtml = `${headerHtml}`;
+    if(employeePayrollList.length==0) {
+        document.querySelector('#table-display').innerHTML = innerHtml;
+        return;
+    }
     for(const employeePayrollData of employeePayrollList){
         innerHtml = `${innerHtml}
         <tr>
@@ -52,8 +56,15 @@ const remove = (node) => {
     let employeePayrollData = employeePayrollList.find(emp => emp._id == node.id);
     if(!employeePayrollData) return;
     const index = employeePayrollList.map(emp => emp._id).indexOf(employeePayrollData._id);
-    employeePayrollList.splice(index,1);
+    employeePayrollList.splice(index, 1);
     localStorage.setItem("EmployeePayrollList", JSON.stringify(employeePayrollList));
     document.querySelector(".emp-count").textContent = employeePayrollList.length;
     createInnerHtml();
 }
+
+const update = (node) => {
+    let employeePayRollData = employeePayrollList.find(emp => emp._id == node.id);
+    if (!employeePayRollData) return;
+    localStorage.setItem('editEmp', JSON.stringify(employeePayRollData));
+    window.location.replace("../pages/employeePayrollForm.html");
+};
